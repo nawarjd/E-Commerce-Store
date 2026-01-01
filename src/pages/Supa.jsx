@@ -3,15 +3,6 @@ import { useState, useEffect } from "react";
 import supabase from "../utils/supabase.js";
 import { HashLoader } from "react-spinners";
 import Footer from "../components/Footer.jsx";
-//E-Commerce-Store
-
-// git init
-// git add .
-// git commit -m "Initial commit"
-// git branch -M main
-// git remote add origin https://github.com/USERNAME/REPO_NAME.git
-// git push -u origin main
-
 
 
 function Page() {
