@@ -6,10 +6,17 @@ export const StoreContext = createContext(null);
 // Create a provider component
 export const StoreProvider = ({ children }) => {
   const [cartProduct, setCartProduct] = useState([]);
-  // const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(1);
 
-  const addToCart = (id ,title, image, price, quantity) => {
-    let newItem = { id: id, title: title , image: image, price: price, quantity: quantity };
+  const addToCart = (id, title, image, price, discountPercentage, quantity) => {
+    let newItem = {
+      id: id,
+      title: title,
+      image: image,
+      price: price,
+      discountPercentage: discountPercentage,
+      quantity: quantity,
+    };
     setCartProduct((prev) => [...prev, newItem]);
     alert("Product added to cart!");
   };
@@ -18,7 +25,9 @@ export const StoreProvider = ({ children }) => {
   const value = {
     addToCart,
     cartProduct,
-    setCartProduct
+    setCartProduct,
+    quantity,
+    setQuantity,
   };
 
   return (

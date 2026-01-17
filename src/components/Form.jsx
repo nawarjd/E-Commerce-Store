@@ -16,7 +16,7 @@ export default function Form({ onSubmit, initialValues }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-7xl m-auto py-6 px-5 absolute -top-[30%] left-1/2 transform -translate-x-1/2 max-sm:-top-1/6"
+      className="w-full max-w-7xl m-auto py-6 px-5 absolute -top-[30%] left-1/2 transform -translate-x-1/2 max-sm:-top-1/6 max-md:px-4"
     >
       <div className="flex justify-between items-center max-lg:flex-col max-lg:gap-4 bg-black text-white shadow-md rounded-4xl px-16 py-9 max-sm:px-8">
         <h2 className="text-6xl font-bold text-white max-w-[560px] tracking-[5px] max-lg:self-start max-lg:max-w-full max-sm:text-5xl">

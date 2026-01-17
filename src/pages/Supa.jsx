@@ -27,7 +27,7 @@ function Page() {
     <>
       <HashLoader
         loading={loading}
-        color="#0E60FA"
+        color="#000"
         cssOverride={{
           position: "absolute",
           top: "50%",

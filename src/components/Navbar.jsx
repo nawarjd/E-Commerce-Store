@@ -20,14 +20,14 @@ export default function Navbar() {
     fontSize: "20px",
   }
   return (
-    <nav className="max-w-7xl m-auto bg-white shadow-2xs py-4 flex items-center justify-between px-5">
+    <nav className="max-w-7xl m-auto bg-white shadow-2xs py-4 flex items-center justify-between px-5 max-md:px-4">
       {/* Logo */}
-      <Link to="/" className="logo text-2xl font-bold text-blue-600">
+      <Link to="/" className="logo text-2xl font-bold">
         NJ.Store
       </Link>
 
       {/* Links */}
-      <div className={`flex items-center gap-6 text-blue-600 font-normal ${showMenu ? "" : "max-md:hidden"}`}
+      <div className={`flex items-center gap-6 font-normal ${showMenu ? "" : "max-md:hidden"}`}
       style={showMenu ? overlayMenuStyles : {}}
       >
         <Link onClick={() => setShowMenu(false)} to="/">Home</Link>
@@ -38,7 +38,7 @@ export default function Navbar() {
       <Icon
           icon="mdi:menu"
           width={28}
-          className="cursor-pointer text-blue-600 hover:text-blue-800 md:hidden"
+          className="cursor-pointer text-black hover:text-gray-800 md:hidden"
           onClick={() => setShowMenu(!showMenu)}
         />
     </nav>

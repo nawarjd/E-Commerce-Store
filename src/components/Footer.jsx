@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#F0F0F0] text-black flex flex-col justify-center mt-40 relative max-sm:mt-60">
       <Form />
-      <div className="flex flex-col gap-10 max-w-7xl mx-auto px-5 pt-[130px] max-xl:pt-36 max-sm:pt-[230px]">
+      <div className="flex flex-col gap-10 max-w-7xl mx-auto px-5 pt-[130px] max-xl:pt-36 max-sm:pt-[230px] max-md:px-4">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8 max-md:mb-0">
           {/* Column 1 - Logo & Description */}

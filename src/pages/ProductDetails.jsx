@@ -10,10 +10,9 @@ export default function ProductDetails() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { addToCart , /*quantity,setQuantity*/} = useContext(StoreContext);
+  const { addToCart, quantity, setQuantity } = useContext(StoreContext);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-
+  // const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     fetch(`https://dummyjson.com/products/${id}`)
@@ -29,7 +28,7 @@ export default function ProductDetails() {
   if (loading)
     return (
       <HashLoader
-        color="#0E60FA"
+        color="#000"
         cssOverride={{
           position: "absolute",
           top: "50%",
@@ -81,25 +80,43 @@ export default function ProductDetails() {
             </span>
           </h3>
           <p className="text-[#666666] mb-3.5">{product?.description}</p>
-          <hr className="text-gray-400 mb-3.5"/>
-          <div className="flex py-[7px] rounded-[62px] mb-3.5">
-            <button onClick={()=>setQuantity((prev)=> prev == 1 ? prev : prev - 1)} className="font-serif text-[20px] font-black cursor-pointer pl-5 pr-3.5 bg-[#F0F0F0] rounded-bl-[62px] rounded-tl-[62px] hover:bg-[#c2c2c2]">
-              -
-            </button>
-            <span className="text-[14px] leading-[30px] px-1.5 bg-[#F0F0F0]">
-              {quantity}
-            </span>
-            <button onClick={()=>setQuantity((prev)=> prev + 1)} className="font-serif text-[20px] font-black cursor-pointer pr-5 pl-3.5 bg-[#F0F0F0] rounded-br-[62px] rounded-tr-[62px]  hover:bg-[#c2c2c2]">
-              +
+          <hr className="text-gray-400 mb-3.5" />
+          <div className="flex gap-5 ">
+            <div className="flex rounded-[62px]">
+              <button
+                onClick={() =>
+                  setQuantity((prev) => (prev == 1 ? prev : prev - 1))
+                }
+                className="font-serif text-[20px] font-black cursor-pointer pl-5 pr-3.5 bg-[#F0F0F0] rounded-bl-[62px] rounded-tl-[62px] hover:bg-[#c2c2c2]"
+              >
+                -
+              </button>
+              <span className="text-[16px] leading-[30px] px-7 py-[11px] bg-[#F0F0F0] max-md:px-3.5 max-md:py-2">
+                {quantity}
+              </span>
+              <button
+                onClick={() => setQuantity((prev) => prev + 1)}
+                className="font-serif text-[20px] font-black cursor-pointer pr-5 pl-3.5 bg-[#F0F0F0] rounded-br-[62px] rounded-tr-[62px]  hover:bg-[#c2c2c2]"
+              >
+                +
+              </button>
+            </div>
+            <button
+              onClick={() =>
+                addToCart(
+                  product.id,
+                  product.title,
+                  product.thumbnail,
+                  product.price,
+                  product.discountPercentage,
+                  quantity
+                )
+              }
+              className="bg-black px-[54px] py-2 cursor-pointer hover:bg-gray-800 text-white rounded-full max-md:px-5 max-md:w-full"
+            >
+              Add to cart
             </button>
           </div>
-          {/* <p className="mb-3.5">Category : {product?.category}</p> */}
-          <button
-            onClick={() => addToCart(product.id, product.title, product.thumbnail, product.price, quantity)}
-            className="bg-blue-600 px-5 py-2 cursor-pointer hover:bg-blue-700 text-white max-sm:w-full rounded-lg"
-          >
-            Add to cart
-          </button>
         </div>
       </div>
       <Footer />
