@@ -48,7 +48,7 @@ export default function Cart() {
       <div className="max-w-7xl m-auto px-6 max-md:px-4">
         <h1 className="text-[40px] mt-5 font-extrabold max-md:mb-1 max-md:text-[32px]">Your Cart</h1>
         <div className="flex items-start gap-5 max-md:flex-col">
-          <div className="py-6 flex flex-col justify-center items-center gap-6 max-md:py-0">
+          <div className="py-6 flex flex-col justify-center items-center gap-6 max-md:py-0 max-md:w-full">
             {cartProduct.length === 0 ? (
               <p>Your cart is empty.</p>
             ) : (
