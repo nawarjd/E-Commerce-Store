@@ -7,6 +7,8 @@ export const StoreContext = createContext(null);
 export const StoreProvider = ({ children }) => {
   const [cartProduct, setCartProduct] = useState([]);
   const [quantity, setQuantity] = useState(1);
+  const [navHeight, setNavHeight] = useState(0);
+
 
   const addToCart = (id, title, image, price, discountPercentage, quantity) => {
     let newItem = {
@@ -21,6 +23,13 @@ export const StoreProvider = ({ children }) => {
     alert("Product added to cart!");
   };
 
+    useEffect(() => {
+    const nav = document.querySelector('nav');
+    if (nav) {
+      setNavHeight(nav.getBoundingClientRect().height);
+    }
+  }, []);
+
   // The value prop holds the data and functions to be shared
   const value = {
     addToCart,
@@ -28,6 +37,8 @@ export const StoreProvider = ({ children }) => {
     setCartProduct,
     quantity,
     setQuantity,
+    navHeight,
+    setNavHeight
   };
 
   return (

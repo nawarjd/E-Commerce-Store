@@ -6,7 +6,7 @@ import Footer from "../components/Footer.jsx";
 import OrderSummary from "../components/OrderSummary.jsx";
 
 export default function Cart() {
-  const { cartProduct, setCartProduct } = useContext(StoreContext);
+  const { cartProduct, setCartProduct , navHeight} = useContext(StoreContext);
   const [subtotal, setSubtotal] = useState(0);
   const [totalDiscounts, setTotalDiscounts] = useState(0);
 
@@ -45,7 +45,7 @@ export default function Cart() {
   console.log(cartProduct);
   return (
     <>
-      <div className="max-w-7xl m-auto px-6 max-md:px-4">
+      <div className="max-w-7xl m-auto px-6 max-md:px-4" style={{paddingTop: navHeight}}>
         <h1 className="text-[40px] mt-5 font-extrabold max-md:mb-1 max-md:text-[32px]">Your Cart</h1>
         <div className="flex items-start gap-5 max-md:flex-col">
           <div className="py-6 flex flex-col justify-center items-center gap-6 max-md:py-0 max-md:w-full">

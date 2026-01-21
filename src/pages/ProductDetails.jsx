@@ -10,7 +10,7 @@ export default function ProductDetails() {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { addToCart, quantity, setQuantity } = useContext(StoreContext);
+  const { addToCart, quantity, setQuantity, navHeight } = useContext(StoreContext);
   const [selectedImage, setSelectedImage] = useState(0);
   // const [quantity, setQuantity] = useState(1);
 
@@ -42,7 +42,7 @@ export default function ProductDetails() {
 
   return (
     <>
-      <div className="max-w-7xl m-auto py-6 px-5 max-md:px-6 flex flex-col md:flex-row justify-center items-center gap-6">
+      <div className="max-w-7xl m-auto py-6 px-5 max-md:px-6 flex flex-col md:flex-row justify-center items-center gap-6" style={{paddingTop: navHeight + 24}}>
         <div className="flex flex-wrap justify-center w-full md:w-1/2">
           <img
             src={product?.images[selectedImage]}

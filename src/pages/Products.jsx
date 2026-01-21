@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { data, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { HashLoader } from "react-spinners";
 import { Icon } from "@iconify/react";
 import { Label } from "@/components/ui/label";
@@ -7,11 +7,13 @@ import { Slider } from "@/components/ui/slider";
 import StarRating from "../components/StarRating.jsx";
 import Form from "../components/Form.jsx";
 import Footer from "../components/Footer.jsx";
+import { useContext } from "react";
+import { StoreContext } from "../context/context.jsx";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [value, setValue] = useState([50, 200]);
+  const [value, setValue] = useState([0, 2500]);
   const [colorSwatches, setColorSwatches] = useState([
     {
       id: 1,
@@ -123,13 +125,18 @@ export default function Products() {
   ]);
   const [showMenu, setShowMenu] = useState(false);
   const [appliedValue, setAppliedValue] = useState(value);
+  const [addPaddingToFilter, setAddPaddingToFilter] = useState(false);
+  const { navHeight } = useContext(StoreContext);
 
   const filteredProducts = useMemo(() => {
     const [min, max] = appliedValue;
     return products.filter((p) => p?.price >= min && p?.price <= max);
   }, [products, appliedValue]);
 
-  const applyFilters = () => setAppliedValue(value);
+  const applyFilters = () => {
+    setAppliedValue(value);
+    setShowMenu(false);
+  }
 
   useEffect(() => {
     fetch("https://dummyjson.com/products")
@@ -171,6 +178,15 @@ export default function Products() {
     );
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      setAddPaddingToFilter(window.innerWidth <= 1024);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   return (
     <>
       <HashLoader
@@ -185,211 +201,221 @@ export default function Products() {
       />
       {!loading && (
         <>
-        <div className="flex gap-5 max-w-7xl m-auto py-6 px-5 max-md:px-6 relative">
           <div
-            className={`flex flex-col gap-6 w-full bg-white max-w-[295px] h-fit py-5 px-6 border border-[#E6E6E6] rounded-4xl ${
-              showMenu ? "max-lg:flex" : "max-lg:hidden"
-            } max-lg:fixed max-lg:max-w-2xl max-lg:top-1/2 max-lg:left-1/2 max-lg:-translate-3/6 max-lg:h-dvh`}
+            className="flex gap-5 max-w-7xl m-auto pb-6 px-5 max-md:px-6 relative"
+            style={{ paddingTop: navHeight + 24 }}
           >
-            {/* Filters */}
-            <div className="flex justify-between">
-              <h3 className="text-[20px] font-bold">Filters</h3>
-              {/* for desktop not clickable */}
-              <Icon
-                width={24}
-                icon="mdi:mixer-settings-vertical"
-                color="#999999"
-                className="max-lg:hidden"
-              />
-              {/* on mobile & clickable */}
-              <Icon
-                width={24}
-                icon="mdi:mixer-settings-vertical"
-                color="#999999"
-                className="lg:hidden cursor-pointer"
-                onClick={()=>setShowMenu(false)}
-              />
-            </div>
-            <hr className="text-[#E6E6E6]" />
-            {/* product type */}
-            <div className="flex flex-col gap-5">
-              <a className="flex justify-between text-[#666]" href="#">
-                T-shirt <Icon width={24} icon="mdi:chevron-right" />
-              </a>
-              <a className="flex justify-between text-[#666]" href="#">
-                Shorts <Icon width={24} icon="mdi:chevron-right" />
-              </a>
-              <a className="flex justify-between text-[#666]" href="#">
-                Shirts <Icon width={24} icon="mdi:chevron-right" />
-              </a>
-              <a className="flex justify-between text-[#666]" href="#">
-                Hoodie <Icon width={24} icon="mdi:chevron-right" />
-              </a>
-              <a className="flex justify-between text-[#666]" href="#">
-                Jeans <Icon width={24} icon="mdi:chevron-right" />
-              </a>
-            </div>
-            <hr className="text-[#E6E6E6]" />
-            {/* Price Range */}
-            <div className="flex flex-col gap-5">
-              <Label htmlFor="slider" className="text-[20px] font-bold">
-                Price
-              </Label>
-              <Slider
-                id="slider"
-                max={5000}
-                min={0}
-                onValueChange={setValue}
-                value={value}
-              />
-              <div className="flex items-center justify-between text-muted-foreground text-sm">
-                <span>${value[0]}</span>
-                <span>${value[1]}</span>
-              </div>
-            </div>
-            <hr className="text-[#E6E6E6]" />
-            {/* Colors */}
-            <div className="flex flex-col gap-5">
-              <h3 className="text-[20px] font-bold">Colors</h3>
-              <div className="flex flex-wrap gap-[15px]">
-                {colorSwatches.map((swatch) => (
-                  <div
-                    key={swatch.id}
-                    className={`w-9 h-9 rounded-full ${swatch.color} border-2 border-black/20 cursor-pointer flex justify-center items-center`}
-                    onClick={() => handleColorChange(swatch.id)}
-                  >
-                    {swatch.checked && (
-                      <Icon
-                        width={16}
-                        icon="mdi:check-bold"
-                        color={
-                          swatch.color == "bg-[#ffffff]" ? "#000000" : "#ffffff"
-                        }
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <hr className="text-[#E6E6E6]" />
-            {/* Size */}
-            <div className="flex flex-col gap-5">
-              <h3 className="text-[20px] font-bold">Size</h3>
-              <div className="flex flex-wrap gap-2">
-                {sizeButtons.map((size) => (
-                  <button
-                    key={size.id}
-                    className={`px-5 py-2.5 border rounded-full cursor-pointer hover:bg-black hover:text-white transition ${
-                      size.checked
-                        ? "bg-black text-white"
-                        : "bg-white text-black"
-                    }`}
-                    onClick={() => handleSizeChange(size.id)}
-                  >
-                    {size.title}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <hr className="text-[#E6E6E6]" />
-            {/* Dress Style */}
-            <div className="flex flex-col gap-5">
-              <h3 className="text-[20px] font-bold">Dress Style</h3>
-              <div className="flex flex-col gap-5">
-                <a className="flex justify-between text-[#666]" href="#">
-                  Casual <Icon width={24} icon="mdi:chevron-right" />
-                </a>
-                <a className="flex justify-between text-[#666]" href="#">
-                  Formal <Icon width={24} icon="mdi:chevron-right" />
-                </a>
-                <a className="flex justify-between text-[#666]" href="#">
-                  Party <Icon width={24} icon="mdi:chevron-right" />
-                </a>
-                <a className="flex justify-between text-[#666]" href="#">
-                  Gym <Icon width={24} icon="mdi:chevron-right" />
-                </a>
-                <button onClick={applyFilters} className="w-full bg-black text-white px-14 py-4 rounded-full text-[14px] cursor-pointer border border-black hover:bg-white hover:text-black transition">
-                  Apply Filtre
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col w-full">
-            {/* top section heading title */}
-            <div className="flex justify-between items-center">
-              <h2 className="text-[32px]">Casual</h2>
-              <p className="flex gap-1 text-[16px] text-[#666666]">
-                Showing {filteredProducts.length} of {products.length} Products{" "}
-                <span className="max-lg:hidden">Sort by:</span>{" "}
-                <span className="font-medium max-lg:hidden">Most Popular</span>{" "}
+            <div
+              className={`flex flex-col gap-6 w-full bg-white max-w-[295px] h-fit py-5 px-6 border border-[#E6E6E6] rounded-4xl ${
+                  showMenu ? "max-lg:flex" : "max-lg:hidden"
+                } max-lg:absolute max-lg:translate-x-[-50%] max-lg:left-[50%] max-lg:overflow-y-scroll max-lg:max-w-2xl max-lg:top-0 max-lg:h-100vh`} 
+                style={addPaddingToFilter ? { paddingTop: navHeight + 24 } : { paddingTop: 20 }}
+            >
+              {/* Filters */}
+              <div className="flex justify-between">
+                <h3 className="text-[20px] font-bold">Filters</h3>
+                {/* for desktop not clickable */}
                 <Icon
                   width={24}
-                  icon="mdi:chevron-down"
-                  className="cursor-pointer max-lg:hidden"
+                  icon="mdi:mixer-settings-vertical"
+                  color="#999999"
+                  className="max-lg:hidden"
                 />
-                {/* Mobile filter icon */}
+                {/* on mobile & clickable */}
                 <Icon
                   width={24}
                   icon="mdi:mixer-settings-vertical"
                   color="#999999"
                   className="lg:hidden cursor-pointer"
-                  onClick={() => setShowMenu((prev) => !prev)}
+                  onClick={() => setShowMenu(false)}
                 />
-              </p>
-            </div>
-            {/* products grid */}
-            <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-5">
-              {filteredProducts.length === 0 && (
-                <p className="text-center col-span-full text-4xl font-semibold">
-                  No products found in this price range.
-                </p>
-              )}
-              {filteredProducts.map((product) => (
-                <Link
-                  to={`/products/${product.id}`}
-                  className="rounded-2xl text-center flex flex-col justify-between align-middle gap-3.5"
-                  key={product.id}
-                >
-                  <img
-                    src={product.images[0]}
-                    className="aspect-square w-full object-contain bg-[#F0EFED] rounded-2xl"
-                  />
-                  <div className="text-left flex flex-col gap-2">
-                    <h3 className="text-[20px] font-bold">{product.title}</h3>
-                    <div className="flex gap-2.5">
-                      <StarRating rating={product.rating} />
-                      <p>{product?.rating.toFixed(1)}/5</p>
+              </div>
+              <hr className="text-[#E6E6E6]" />
+              {/* product type */}
+              <div className="flex flex-col gap-5">
+                <a className="flex justify-between text-[#666]" href="#">
+                  T-shirt <Icon width={24} icon="mdi:chevron-right" />
+                </a>
+                <a className="flex justify-between text-[#666]" href="#">
+                  Shorts <Icon width={24} icon="mdi:chevron-right" />
+                </a>
+                <a className="flex justify-between text-[#666]" href="#">
+                  Shirts <Icon width={24} icon="mdi:chevron-right" />
+                </a>
+                <a className="flex justify-between text-[#666]" href="#">
+                  Hoodie <Icon width={24} icon="mdi:chevron-right" />
+                </a>
+                <a className="flex justify-between text-[#666]" href="#">
+                  Jeans <Icon width={24} icon="mdi:chevron-right" />
+                </a>
+              </div>
+              <hr className="text-[#E6E6E6]" />
+              {/* Price Range */}
+              <div className="flex flex-col gap-5">
+                <Label htmlFor="slider" className="text-[20px] font-bold">
+                  Price
+                </Label>
+                <Slider
+                  id="slider"
+                  max={5000}
+                  min={0}
+                  onValueChange={setValue}
+                  value={value}
+                />
+                <div className="flex items-center justify-between text-muted-foreground text-sm">
+                  <span>${value[0]}</span>
+                  <span>${value[1]}</span>
+                </div>
+              </div>
+              <hr className="text-[#E6E6E6]" />
+              {/* Colors */}
+              <div className="flex flex-col gap-5">
+                <h3 className="text-[20px] font-bold">Colors</h3>
+                <div className="flex flex-wrap gap-[15px]">
+                  {colorSwatches.map((swatch) => (
+                    <div
+                      key={swatch.id}
+                      className={`w-9 h-9 rounded-full ${swatch.color} border-2 border-black/20 cursor-pointer flex justify-center items-center`}
+                      onClick={() => handleColorChange(swatch.id)}
+                    >
+                      {swatch.checked && (
+                        <Icon
+                          width={16}
+                          icon="mdi:check-bold"
+                          color={
+                            swatch.color == "bg-[#ffffff]"
+                              ? "#000000"
+                              : "#ffffff"
+                          }
+                        />
+                      )}
                     </div>
-
-                    <h3 className="text-2xl font-bold mb-3.5 flex items-center gap-3">
-                      $
-                      {(
-                        product?.price -
-                        (product?.price *
-                          product?.discountPercentage.toFixed(2)) /
-                          100
-                      ).toFixed(2)}{" "}
-                      <span className="line-through text-[#B3B3B3] font-medium">
-                        ${product?.price}
-                      </span>
-                      <span className="text-[12px] bg-red-100 py-3.5 px-1.5 rounded-full text-[#FF3333] font-medium">
-                        -{product?.discountPercentage}%
-                      </span>
-                    </h3>
-                  </div>
-                </Link>
-              ))}
+                  ))}
+                </div>
+              </div>
+              <hr className="text-[#E6E6E6]" />
+              {/* Size */}
+              <div className="flex flex-col gap-5">
+                <h3 className="text-[20px] font-bold">Size</h3>
+                <div className="flex flex-wrap gap-2">
+                  {sizeButtons.map((size) => (
+                    <button
+                      key={size.id}
+                      className={`px-5 py-2.5 border rounded-full cursor-pointer hover:bg-black hover:text-white transition ${
+                        size.checked
+                          ? "bg-black text-white"
+                          : "bg-white text-black"
+                      }`}
+                      onClick={() => handleSizeChange(size.id)}
+                    >
+                      {size.title}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <hr className="text-[#E6E6E6]" />
+              {/* Dress Style */}
+              <div className="flex flex-col gap-5">
+                <h3 className="text-[20px] font-bold">Dress Style</h3>
+                <div className="flex flex-col gap-5">
+                  <a className="flex justify-between text-[#666]" href="#">
+                    Casual <Icon width={24} icon="mdi:chevron-right" />
+                  </a>
+                  <a className="flex justify-between text-[#666]" href="#">
+                    Formal <Icon width={24} icon="mdi:chevron-right" />
+                  </a>
+                  <a className="flex justify-between text-[#666]" href="#">
+                    Party <Icon width={24} icon="mdi:chevron-right" />
+                  </a>
+                  <a className="flex justify-between text-[#666]" href="#">
+                    Gym <Icon width={24} icon="mdi:chevron-right" />
+                  </a>
+                  <button
+                    onClick={applyFilters}
+                    className="w-full bg-black text-white px-14 py-4 rounded-full text-[14px] cursor-pointer border border-black hover:bg-white hover:text-black transition"
+                  >
+                    Apply Filtre
+                  </button>
+                </div>
+              </div>
             </div>
-            {/* pagination */}
-            <hr className="text-[#E6E6E6]" />
-            {/* <div></div> */}
-           
+            <div className="flex flex-col w-full">
+              {/* top section heading title */}
+              <div className="flex justify-between items-center">
+                <h2 className="text-[32px]">Casual</h2>
+                <p className="flex gap-1 text-[16px] text-[#666666]">
+                  Showing {filteredProducts.length} of {products.length}{" "}
+                  Products <span className="max-lg:hidden">Sort by:</span>{" "}
+                  <span className="font-medium max-lg:hidden">
+                    Most Popular
+                  </span>{" "}
+                  <Icon
+                    width={24}
+                    icon="mdi:chevron-down"
+                    className="cursor-pointer max-lg:hidden"
+                  />
+                  {/* Mobile filter icon */}
+                  <Icon
+                    width={24}
+                    icon="mdi:mixer-settings-vertical"
+                    color="#999999"
+                    className="lg:hidden cursor-pointer"
+                    onClick={() => setShowMenu((prev) => !prev)}
+                  />
+                </p>
+              </div>
+              {/* products grid */}
+              <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-5">
+                {filteredProducts.length === 0 && (
+                  <p className="text-center col-span-full text-4xl font-semibold">
+                    No products found in this price range.
+                  </p>
+                )}
+                {filteredProducts.map((product) => (
+                  <Link
+                    to={`/products/${product.id}`}
+                    className="rounded-2xl text-center flex flex-col justify-between align-middle gap-3.5"
+                    key={product.id}
+                  >
+                    <img
+                      src={product.images[0]}
+                      className="aspect-square w-full object-contain bg-[#F0EFED] rounded-2xl"
+                    />
+                    <div className="text-left flex flex-col gap-2">
+                      <h3 className="text-[20px] font-bold">{product.title}</h3>
+                      <div className="flex gap-2.5">
+                        <StarRating rating={product.rating} />
+                        <p>{product?.rating.toFixed(1)}/5</p>
+                      </div>
+
+                      <h3 className="text-2xl font-bold mb-3.5 flex items-center gap-3">
+                        $
+                        {(
+                          product?.price -
+                          (product?.price *
+                            product?.discountPercentage.toFixed(2)) /
+                            100
+                        ).toFixed(2)}{" "}
+                        <span className="line-through text-[#B3B3B3] font-medium">
+                          ${product?.price}
+                        </span>
+                        <span className="text-[12px] bg-red-100 py-3.5 px-1.5 rounded-full text-[#FF3333] font-medium">
+                          -{product?.discountPercentage}%
+                        </span>
+                      </h3>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              {/* pagination */}
+              <hr className="text-[#E6E6E6]" />
+              {/* <div></div> */}
+            </div>
           </div>
-        </div>
-         {/* Form */}
-        {/* <Form className="absolute"/> */}
-        {/* Footer */}
-        <Footer />
+          {/* Form */}
+          {/* <Form className="absolute"/> */}
+          {/* Footer */}
+          <Footer />
         </>
       )}
     </>

@@ -1,12 +1,17 @@
+import { useContext } from "react";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import { StoreContext } from "../context/context";
 
 
 export default function Home() {
+  const { navHeight } = useContext(StoreContext);
   return (
     <>
       {/* Hero section */}
-      <div className="flex justify-center align-middle h-screen text-center px-[120px]  bg-[#F2F0F1] max-md:px-5 max-md:flex-col max-md:h-auto max-md:pt-12 gap-6">
+      <div className="flex justify-center align-middle h-screen text-center px-[120px]  bg-[#F2F0F1] max-md:px-5 max-md:flex-col max-md:h-auto max-md:pt-12 gap-6"
+        style={{ paddingTop: navHeight + 48 }}
+      >
         <div className="w-1/2 flex flex-col justify-center align-middle gap-4 text-left max-md:w-full">
           <h1 className="max-w-lg text-6xl font-bold max-md:max-w-full max-md:w-full max-md:text-5xl leading-none">
             FIND CLOTHES THAT MATCHES YOUR STYLE
